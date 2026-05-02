@@ -97,6 +97,7 @@ export default function Reel({
 
       {/* CENTER - REEL */}
       <div
+        data-testid="reel-center"
         className="relative flex-1 bg-black overflow-hidden cursor-crosshair"
         onClick={handleSceneClick}
       >

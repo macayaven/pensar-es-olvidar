@@ -8,3 +8,8 @@ coverage/
 !.env.example
 .vscode
 .husky/_
+
+# Playwright artefacts
+test-results/
+playwright-report/
+playwright/.cache/
