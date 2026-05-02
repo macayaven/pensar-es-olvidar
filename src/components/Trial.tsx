@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { TrialRound } from '../types';
+import { type TrialRound } from '../types';
 
 interface TrialProps {
   rounds: TrialRound[];

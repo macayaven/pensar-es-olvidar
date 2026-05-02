@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { Share2, RotateCcw } from 'lucide-react';
-import { JudgeVerdict } from '../types';
+import { type JudgeVerdict } from '../types';
 import html2canvas from 'html2canvas';
 
 interface VerdictProps {
@@ -27,7 +27,7 @@ export default function Verdict({ verdict, onRestart }: VerdictProps) {
     }
   };
 
-  const metrics = [
+  const metrics: { key: keyof JudgeVerdict['funes']; label: string }[] = [
     { key: 'specificity', label: t('verdict.rubric.specificity') },
     { key: 'generalization', label: t('verdict.rubric.generalization') },
     { key: 'coherence', label: t('verdict.rubric.coherence') },
@@ -56,9 +56,7 @@ export default function Verdict({ verdict, onRestart }: VerdictProps) {
                 className="flex justify-between items-center border-b border-funes-red/20 pb-1"
               >
                 <span className="text-[10px] text-zinc-500 font-sans">{m.label}</span>
-                <span className="font-mono text-xs text-funes-red">
-                  {(verdict.funes as any)[m.key]}
-                </span>
+                <span className="font-mono text-xs text-funes-red">{verdict.funes[m.key]}</span>
               </div>
             ))}
           </div>
@@ -70,9 +68,7 @@ export default function Verdict({ verdict, onRestart }: VerdictProps) {
                 className="flex justify-between items-center border-b border-miras-blue/20 pb-1 flex-row-reverse"
               >
                 <span className="text-[10px] text-zinc-500 font-sans">{m.label}</span>
-                <span className="font-mono text-xs text-miras-blue">
-                  {(verdict.miras as any)[m.key]}
-                </span>
+                <span className="font-mono text-xs text-miras-blue">{verdict.miras[m.key]}</span>
               </div>
             ))}
           </div>

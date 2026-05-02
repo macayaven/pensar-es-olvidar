@@ -1,14 +1,19 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
-import { Globe, Share2, RotateCcw } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import './i18n/config';
 
-import { AppPhase, Scene, FunesEntry, TrialRound, JudgeVerdict } from './types';
+import {
+  type AppPhase,
+  type Scene,
+  type FunesEntry,
+  type TrialRound,
+  type JudgeVerdict,
+} from './types';
 import reelThresholds from './data/reel-thresholds.json';
 import { useAudio } from './hooks/useAudio';
 import { rewriteMirasMemory, auditMemory, judgeMemories } from './geminiService';
-import html2canvas from 'html2canvas';
 
 // Components
 import Prologue from './components/Prologue';
@@ -69,8 +74,7 @@ export default function App() {
 
     const allRounds: TrialRound[] = [];
 
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
+    for (const q of questions) {
       const funesDump = funesMemory
         .map((e) => `Time ${e.timestamp}: Saw ${e.digit} in scene ${e.scene_id}`)
         .join(', ');

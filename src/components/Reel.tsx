@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { Scene, FunesEntry } from '../types';
+import { type Scene, type FunesEntry } from '../types';
 
 interface ReelProps {
   scenes: Scene[];
@@ -21,7 +21,7 @@ export default function Reel({
   const { t } = useTranslation();
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [bloom, setBloom] = useState(false);
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startTime] = useState(Date.now());
   const sceneStartTimeRef = useRef(Date.now());
 
   const currentScene = scenes[currentSceneIndex];
@@ -37,7 +37,7 @@ export default function Reel({
     }, currentScene.duration_ms);
 
     return () => clearTimeout(timer);
-  }, [currentSceneIndex, scenes, onComplete]);
+  }, [currentSceneIndex, scenes, onComplete, currentScene.duration_ms]);
 
   const handleSceneClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

@@ -18,7 +18,11 @@ export function useAudio() {
 
   const playChime = useCallback((digit: number) => {
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const Ctor =
+        window.AudioContext ??
+        (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!Ctor) return;
+      audioCtxRef.current = new Ctor();
     }
 
     const ctx = audioCtxRef.current;

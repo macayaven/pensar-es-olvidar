@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { type JudgeVerdict } from './types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -50,7 +51,7 @@ export async function judgeMemories(
   promptTemplate: string,
   transcript: string,
   language: string,
-): Promise<any> {
+): Promise<JudgeVerdict> {
   const prompt = promptTemplate
     .replace('{{transcript}}', transcript)
     .replace('{{language}}', language);
