@@ -1,0 +1,122 @@
+[
+  {
+    "id": "thr_01",
+    "duration_ms": 6500,
+    "background_gradient": "linear-gradient(135deg, #1a1a2e 0%, #2d1b1b 100%)",
+    "caption": "A door ajar at dawn",
+    "digit": 3,
+    "digit_position": { "x_pct": 32, "y_pct": 41 },
+    "digit_size_px": 32,
+    "digit_color": "#5a4a3a"
+  },
+  {
+    "id": "thr_02",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(180deg, #0d1b2a 0%, #1a3a52 100%)",
+    "caption": "A train platform reflecting in a puddle",
+    "digit": 7,
+    "digit_position": { "x_pct": 78, "y_pct": 65 },
+    "digit_size_px": 28,
+    "digit_color": "#3a4a5a"
+  },
+  {
+    "id": "thr_03",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(45deg, #2c3e50 0%, #000000 100%)",
+    "caption": "A half-open book in a dusty room",
+    "digit": 1,
+    "digit_position": { "x_pct": 15, "y_pct": 82 },
+    "digit_size_px": 24,
+    "digit_color": "#4a5a6a"
+  },
+  {
+    "id": "thr_04",
+    "duration_ms": 6500,
+    "background_gradient": "linear-gradient(90deg, #1e272e 0%, #485460 100%)",
+    "caption": "Breath misting on cold glass",
+    "digit": 5,
+    "digit_position": { "x_pct": 50, "y_pct": 50 },
+    "digit_size_px": 40,
+    "digit_color": "#5a6a7a"
+  },
+  {
+    "id": "thr_05",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(120deg, #2b2b2b 0%, #1a1a1a 100%)",
+    "caption": "The first line of a tide at night",
+    "digit": 9,
+    "digit_position": { "x_pct": 85, "y_pct": 20 },
+    "digit_size_px": 26,
+    "digit_color": "#6a5a4a"
+  },
+  {
+    "id": "thr_06",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(225deg, #1c1c1c 0%, #3d3d3d 100%)",
+    "caption": "A bell tower silhouette against dusk",
+    "digit": 3,
+    "digit_position": { "x_pct": 22, "y_pct": 75 },
+    "digit_size_px": 30,
+    "digit_color": "#7a6a5a"
+  },
+  {
+    "id": "thr_07",
+    "duration_ms": 6500,
+    "background_gradient": "linear-gradient(0deg, #0f0f0f 0%, #2f2f2f 100%)",
+    "caption": "A key turning in a lock",
+    "digit": 10,
+    "digit_position": { "x_pct": 65, "y_pct": 40 },
+    "digit_size_px": 35,
+    "digit_color": "#8a7a6a"
+  },
+  {
+    "id": "thr_08",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(135deg, #1a2a3a 0%, #3a4a5a 100%)",
+    "caption": "Shadow of a visitor in the hallway",
+    "digit": 2,
+    "digit_position": { "x_pct": 42, "y_pct": 58 },
+    "digit_size_px": 32,
+    "digit_color": "#9a8a7a"
+  },
+  {
+    "id": "thr_09",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(180deg, #2a1a1a 0%, #0a0a0a 100%)",
+    "caption": "The last candle extinguishing",
+    "digit": 8,
+    "digit_position": { "x_pct": 10, "y_pct": 10 },
+    "digit_size_px": 20,
+    "digit_color": "#aa9a8a"
+  },
+  {
+    "id": "thr_10",
+    "duration_ms": 6500,
+    "background_gradient": "linear-gradient(270deg, #111 0%, #333 100%)",
+    "caption": "A migration of birds crossing the moon",
+    "digit": 4,
+    "digit_position": { "x_pct": 75, "y_pct": 25 },
+    "digit_size_px": 34,
+    "digit_color": "#baaa9a"
+  },
+  {
+    "id": "thr_11",
+    "duration_ms": 6000,
+    "background_gradient": "linear-gradient(45deg, #123 0%, #321 100%)",
+    "caption": "A spider web spanning a doorway",
+    "digit": 7,
+    "digit_position": { "x_pct": 30, "y_pct": 90 },
+    "digit_size_px": 28,
+    "digit_color": "#caaa9a"
+  },
+  {
+    "id": "thr_12",
+    "duration_ms": 7000,
+    "background_gradient": "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
+    "caption": "The final page before the end",
+    "digit": 6,
+    "digit_position": { "x_pct": 55, "y_pct": 65 },
+    "digit_size_px": 36,
+    "digit_color": "#daaa9a"
+  }
+]

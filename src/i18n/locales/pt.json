@@ -1,0 +1,7 @@
+{
+  "prologue": { "quote": "To think is to forget differences, to generalize, to abstract.", "attribution": "— Borges, Funes the Memorious", "begin": "Começar", "instruction": "Click any number 1–10 you see during the next 90 seconds." },
+  "reel": { "miras_caption": "≤ 280 tokens · pattern over detail" },
+  "trial": { "title": "O Julgamento", "round": "Rodada {{round}} / IV", "questions": { "r1": "What appeared in scene 5?", "r2": "What theme runs through all the scenes?", "r3": "If scene 5 had been different, would the meaning of the whole change?", "r4": "Tell me what you understood." } },
+  "verdict": { "share": "Compartilhar veredito", "restart": "Outra leitura", "closing": "Pensar es olvidar.", "rubric": { "specificity": "Especificidade", "generalization": "Generalização", "coherence": "Coerência", "understanding": "Compreensão" } },
+  "prompts": { "miras_retention": "You are a memory with a fixed budget of 280 tokens...", "auditor_query": "You are interrogating a memory...", "judge": "You have witnessed a trial between two memories..." }
+}
