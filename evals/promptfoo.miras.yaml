@@ -1,0 +1,57 @@
+description: MIRAS retention prompt — single-shot sanity baseline
+
+# Spec §7 canonical English template; see ../prompts/miras-retention.txt
+# When GAP_ANALYSIS.md S1 lands, this should source from src/prompts.ts.
+prompts:
+  - file://./prompts/miras-retention.txt
+
+providers:
+  - id: google:gemini-1.5-flash-latest
+    config:
+      temperature: 0.7
+      maxOutputTokens: 400
+
+# Single-shot baseline: each event runs against an empty memory.
+# This catches prompt-obedience regressions ("Return only the new
+# memory. No explanation." being ignored), but does NOT exercise
+# retention pressure — that requires the chained 12-event eval still
+# pending on Carlos's input. See README.
+defaultTest:
+  vars:
+    language: English
+    abstract: '(nothing yet)'
+  assert:
+    - type: javascript
+      value: |
+        // Output must be non-empty and shorter than ~280 tokens.
+        // Char-count proxy: assume ~4 chars/token, allow some slack
+        // for non-Latin scripts. 1500 chars ≈ ~375 tokens upper bound.
+        if (typeof output !== 'string' || output.trim().length === 0) {
+          return { pass: false, reason: 'empty output' };
+        }
+        if (output.length > 1500) {
+          return {
+            pass: false,
+            reason: `output ${output.length} chars likely exceeds 280-token budget`,
+          };
+        }
+        return { pass: true };
+    - type: not-contains
+      value: 'Here is'
+    - type: not-contains
+      value: 'I have'
+    - type: not-contains
+      value: 'rewritten'
+
+tests:
+  - description: scene 1 — door ajar at dawn
+    vars:
+      event: "In scene 'A door ajar, dawn light spilling onto the floor', the digit 3 was perceived at (32%, 41%)."
+
+  - description: scene 5 — half-open book (the round-1 trial reference)
+    vars:
+      event: "In scene 'A half-open book on a table', the digit 8 was perceived at (85%, 20%)."
+
+  - description: scene 8 — birds on a wire, nine of them (latent theme should already be discoverable)
+    vars:
+      event: "In scene 'Birds on a wire — exactly nine of them', the digit 9 was perceived at (42%, 58%)."
