@@ -96,7 +96,7 @@ async function runChain(): Promise<TraceEntry[]> {
       .replace('{{language}}', 'English');
 
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-flash-latest',
       contents: prompt,
     });
     const text = response.text?.trim();

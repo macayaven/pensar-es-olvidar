@@ -14,7 +14,7 @@ export async function rewriteMirasMemory(
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-flash-latest',
       contents: prompt,
     });
     return response.text?.trim() || currentMemory;
@@ -37,7 +37,7 @@ export async function auditMemory(
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-flash-latest',
       contents: prompt,
     });
     return response.text?.trim() || 'Error interrogating memory.';
@@ -58,7 +58,7 @@ export async function judgeMemories(
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-flash-latest',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
