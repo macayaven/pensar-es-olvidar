@@ -58,7 +58,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.8.3",
-    "promptfoo": "^0.103.19",
+    "promptfoo": "^0.121.9",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
