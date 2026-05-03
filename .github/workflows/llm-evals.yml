@@ -21,6 +21,11 @@ jobs:
   miras:
     name: promptfoo baseline · chained retention
     runs-on: ubuntu-latest
+    # Scope GOOGLE_API_KEY to the 'evals' environment — repository-level
+    # secrets are accessible from every workflow; environment secrets
+    # require explicit opt-in via `environment:` on the job. Right blast
+    # radius for a paid API key.
+    environment: evals
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
