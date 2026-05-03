@@ -9,7 +9,11 @@ providers:
   - id: google:gemini-flash-latest
     config:
       temperature: 0.7
-      maxOutputTokens: 400
+      # No maxOutputTokens cap — Gemini 3+ Flash uses internal reasoning
+      # tokens that count against this cap, so a 400-token cap leaves
+      # ~12 tokens for the actual completion. The 280-token MIRAS budget
+      # is a soft constraint enforced by the prompt and verified by the
+      # length assertion below; we don't need a hard API cap.
 
 # Single-shot baseline: each event runs against an empty memory.
 # This catches prompt-obedience regressions ("Return only the new
@@ -26,16 +30,19 @@ defaultTest:
         // Output must be non-empty and shorter than ~280 tokens.
         // Char-count proxy: assume ~4 chars/token, allow some slack
         // for non-Latin scripts. 1500 chars ≈ ~375 tokens upper bound.
+        // Promptfoo 0.121+ requires a boolean or full GradingResult
+        // (with score) — { pass: true } alone throws a type error.
         if (typeof output !== 'string' || output.trim().length === 0) {
-          return { pass: false, reason: 'empty output' };
+          return { pass: false, score: 0, reason: 'empty output' };
         }
         if (output.length > 1500) {
           return {
             pass: false,
+            score: 0,
             reason: `output ${output.length} chars likely exceeds 280-token budget`,
           };
         }
-        return { pass: true };
+        return true;
     - type: not-contains
       value: 'Here is'
     - type: not-contains
