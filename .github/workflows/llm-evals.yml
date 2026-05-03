@@ -19,24 +19,30 @@ concurrency:
 
 jobs:
   miras:
-    name: promptfoo · MIRAS retention baseline
+    name: promptfoo baseline · chained retention
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
 
-      - name: Run MIRAS eval
+      - name: Run promptfoo single-shot baseline
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: npm run eval:miras
 
-      - name: Upload promptfoo results
+      - name: Run chained MIRAS retention eval
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: npm run eval:chain
+
+      - name: Upload eval artefacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: promptfoo-results
+          name: eval-artefacts
           path: |
             .promptfoo/
             promptfoo-output.json
+            evals/output/
           retention-days: 30
           if-no-files-found: ignore
