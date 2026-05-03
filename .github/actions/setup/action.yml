@@ -12,7 +12,10 @@ runs:
 
     - name: Verify lockfile is in sync with package.json
       shell: bash
-      run: npm ci --dry-run
+      # --ignore-scripts because npm 10's dry-run still runs lifecycle
+      # scripts (e.g. 'prepare: husky'), and dry-run shouldn't have
+      # side effects. The real install below runs scripts as normal.
+      run: npm ci --dry-run --ignore-scripts
 
     - name: Install dependencies
       shell: bash
