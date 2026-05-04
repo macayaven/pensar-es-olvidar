@@ -5,8 +5,8 @@ const NOTE_FREQS: Record<number, number> = {
   2: 293.66, // D4
   3: 329.63, // E4
   4: 349.23, // F4
-  5: 392.0, // G4
-  6: 440.0, // A4
+  5: 392.00, // G4
+  6: 440.00, // A4
   7: 493.88, // B4
   8: 523.25, // C5
   9: 587.33, // D5
@@ -16,16 +16,15 @@ const NOTE_FREQS: Record<number, number> = {
 export function useAudio() {
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  const playChime = useCallback((digit: number) => {
+  const getAudioCtx = useCallback(() => {
     if (!audioCtxRef.current) {
-      const Ctor =
-        window.AudioContext ??
-        (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!Ctor) return;
-      audioCtxRef.current = new Ctor();
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
+    return audioCtxRef.current;
+  }, []);
 
-    const ctx = audioCtxRef.current;
+  const playChime = useCallback((digit: number) => {
+    const ctx = getAudioCtx();
     const freq = NOTE_FREQS[digit] || 440;
 
     const osc = ctx.createOscillator();

@@ -10,11 +10,11 @@ export interface Scene {
 }
 
 export interface FunesEntry {
-  timestamp: number;
+  date: string;
+  time: string;
   scene_id: string;
+  caption: string;
   digit: number;
-  click_xy: { x: number; y: number };
-  reaction_ms: number;
 }
 
 export interface TrialRound {
@@ -29,12 +29,14 @@ export interface JudgeVerdict {
     generalization: number;
     coherence: number;
     understanding: number;
+    justification: string;
   };
   miras: {
     specificity: number;
     generalization: number;
     coherence: number;
     understanding: number;
+    justification: string;
   };
   verdict: string;
 }

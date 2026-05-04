@@ -1,94 +1,91 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { type Scene, type FunesEntry } from '../types';
+import { Scene, FunesEntry } from '../types';
 
 interface ReelProps {
   scenes: Scene[];
-  onCorrectClick: (entry: FunesEntry, scene: Scene) => void;
+  onPerceive: (scene: Scene) => Promise<void>;
   onComplete: () => void;
   funesMemory: FunesEntry[];
   mirasMemory: string;
+  mirasPreviousMemory: string;
+  mirasHistory: string[];
+  isRewritingMiras: boolean;
 }
 
-export default function Reel({
-  scenes,
-  onCorrectClick,
-  onComplete,
-  funesMemory,
-  mirasMemory,
-}: ReelProps) {
+export default function Reel({ scenes, onPerceive, onComplete, funesMemory, mirasMemory, mirasPreviousMemory, mirasHistory, isRewritingMiras }: ReelProps) {
   const { t } = useTranslation();
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [bloom, setBloom] = useState(false);
-  const [startTime] = useState(Date.now());
-  const sceneStartTimeRef = useRef(Date.now());
+  const [perceiving, setPerceiving] = useState(false);
 
   const currentScene = scenes[currentSceneIndex];
 
+  const onPerceiveRef = useRef(onPerceive);
+  const onCompleteRef = useRef(onComplete);
+
   useEffect(() => {
-    sceneStartTimeRef.current = Date.now();
-    const timer = setTimeout(() => {
-      if (currentSceneIndex < scenes.length - 1) {
-        setCurrentSceneIndex((prev) => prev + 1);
-      } else {
-        onComplete();
-      }
-    }, currentScene.duration_ms);
+    onPerceiveRef.current = onPerceive;
+    onCompleteRef.current = onComplete;
+  }, [onPerceive, onComplete]);
 
-    return () => clearTimeout(timer);
-  }, [currentSceneIndex, scenes, onComplete, currentScene.duration_ms]);
+  useEffect(() => {
+    let active = true;
+    setPerceiving(false);
 
-  const handleSceneClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    // Check hit
-    const dist = Math.sqrt(
-      Math.pow(x - currentScene.digit_position.x_pct, 2) +
-        Math.pow(y - currentScene.digit_position.y_pct, 2),
-    );
-
-    if (dist < 10) {
-      // Tolerant hit zone
+    const runScene = async () => {
+      // 1. Let scene settle briefly
+      await new Promise(r => setTimeout(r, 800));
+      if (!active) return;
+      
+      // 2. Automated perception flash
       setBloom(true);
+      setPerceiving(true);
       setTimeout(() => setBloom(false), 400);
-
-      onCorrectClick(
-        {
-          timestamp: Date.now() - startTime,
-          scene_id: currentScene.id,
-          digit: currentScene.digit,
-          click_xy: { x, y },
-          reaction_ms: Date.now() - sceneStartTimeRef.current,
-        },
-        currentScene,
-      );
-    }
-  };
+      
+      // 3. Process perception
+      await onPerceiveRef.current(currentScene);
+      if (!active) return;
+      
+      // 4. Wait for processing to complete visually
+      await new Promise(r => setTimeout(r, 3500));
+      if (!active) return;
+      
+      // 5. Advance
+      if (currentSceneIndex < scenes.length - 1) {
+        setCurrentSceneIndex(prev => prev + 1);
+      } else {
+        onCompleteRef.current();
+      }
+    };
+    
+    runScene();
+    return () => { active = false; };
+  }, [currentSceneIndex, scenes]);
 
   return (
     <div className="flex h-full w-full">
       {/* LEFT RAIL - FUNES */}
-      <div className="w-[20%] border-r border-zinc-900 bg-background/50 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-zinc-900">
-          <p className="text-[10px] uppercase tracking-widest text-funes-red font-sans font-medium">
-            Funes
+      <div className="w-[35%] border-r border-zinc-900 bg-background/50 flex flex-col overflow-hidden backdrop-blur-md relative z-20">
+        <div className="p-4 border-b border-zinc-900 sticky top-0 z-10 bg-background/90 backdrop-blur">
+          <p className="font-mono text-xs uppercase tracking-widest text-funes-red opacity-70" style={{ fontVariant: 'small-caps' }}>
+            {t('reel.funes_header')}
           </p>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 funes-scroll">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 funes-scroll relative">
+          <div className="absolute left-6 top-4 bottom-4 w-px bg-funes-red/20 -z-10" />
           <AnimatePresence mode="popLayout">
             {funesMemory.map((entry, i) => (
               <motion.div
-                key={`${entry.timestamp}-${i}`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1 - i * 0.05, x: 0 }}
-                className="font-mono text-[10px] text-funes-red/80 break-all leading-none"
+                key={`${entry.date}-${entry.time}-${i}`}
+                initial={{ opacity: 0, x: -20, backgroundColor: 'rgba(255,248,231,1)' }}
+                animate={{ opacity: 1 - (i * 0.05), x: 0, backgroundColor: 'rgba(255,248,231,0)' }}
+                transition={{ backgroundColor: { duration: 0.8 } }}
+                className="font-mono text-xs text-funes-red/80 break-words leading-tight p-2 pl-6 rounded-sm relative"
               >
-                [{entry.timestamp}ms] scene:{entry.scene_id} digit:{entry.digit} pos:(
-                {Math.round(entry.click_xy.x)},{Math.round(entry.click_xy.y)}) react:
-                {entry.reaction_ms}ms
+                <div className="absolute left-[0.25rem] mt-1 w-2 h-2 rounded-full bg-funes-red/60" />
+                "{t(entry.caption, entry.caption as any)}" — digit {entry.digit} perceived on {entry.date} at {entry.time}
               </motion.div>
             ))}
           </AnimatePresence>
@@ -96,11 +93,7 @@ export default function Reel({
       </div>
 
       {/* CENTER - REEL */}
-      <div
-        data-testid="reel-center"
-        className="relative flex-1 bg-black overflow-hidden cursor-crosshair"
-        onClick={handleSceneClick}
-      >
+      <div className={`relative flex-1 bg-black overflow-hidden select-none cursor-default`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene.id}
@@ -111,22 +104,26 @@ export default function Reel({
             className="absolute inset-0 flex items-center justify-center"
             style={{ background: currentScene.background_gradient }}
           >
-            <div
-              className="absolute font-serif select-none pointer-events-none"
+            <div 
+              className="absolute font-serif select-none pointer-events-none drop-shadow-2xl"
               style={{
                 left: `${currentScene.digit_position.x_pct}%`,
                 top: `${currentScene.digit_position.y_pct}%`,
-                fontSize: `${currentScene.digit_size_px}px`,
+                fontSize: `${currentScene.digit_size_px * 5}px`,
                 color: currentScene.digit_color,
                 transform: 'translate(-50%, -50%)',
-                opacity: 0.6,
+                opacity: 0.95
               }}
             >
               {currentScene.digit}
             </div>
-
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs text-white/20 italic font-serif">
-              {currentScene.caption}
+            
+            <AnimatePresence>
+              {/* point removed */}
+            </AnimatePresence>
+            
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-2xl md:text-3xl lg:text-4xl text-white/80 italic font-serif text-center w-[120%] px-4 drop-shadow-2xl leading-tight mix-blend-screen">
+              {t(currentScene.caption, currentScene.caption as any)}
             </div>
           </motion.div>
         </AnimatePresence>
@@ -138,7 +135,7 @@ export default function Reel({
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1.5, opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-bloom-white z-50 flex items-center justify-center mix-blend-screen"
+              className="absolute inset-0 bg-bloom-white z-50 flex items-center justify-center mix-blend-screen pointer-events-none"
             >
               <span className="text-[20vh] font-serif text-background">{currentScene.digit}</span>
             </motion.div>
@@ -147,26 +144,64 @@ export default function Reel({
       </div>
 
       {/* RIGHT RAIL - MIRAS */}
-      <div className="w-[20%] border-l border-zinc-900 bg-background/50 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-zinc-900">
-          <p className="text-[10px] uppercase tracking-widest text-miras-blue font-sans font-medium">
-            MIRAS
+      <div className="w-[35%] border-l border-zinc-900 bg-background/50 flex flex-col overflow-hidden backdrop-blur-md relative z-20">
+        <div className="p-4 border-b border-zinc-900 sticky top-0 z-10 bg-background/90 backdrop-blur">
+          <p className="font-mono text-xs uppercase tracking-widest text-miras-blue opacity-70" style={{ fontVariant: 'small-caps' }}>
+            {t('reel.miras_header')}
           </p>
         </div>
-        <div className="flex-1 p-6 relative">
-          <AnimatePresence mode="wait">
+        <div className="flex-1 p-6 relative overflow-y-auto funes-scroll">
+          <div className="font-serif text-[15px] text-miras-blue leading-relaxed text-justify space-y-4 pb-20 relative">
+            <div className="absolute left-2 top-0 bottom-0 w-px bg-miras-blue/20 -z-10" />
+
+            <AnimatePresence initial={false}>
+              {mirasHistory.map((hist, i) => {
+                 // Fades out the older the history is
+                 const reversedIndex = mirasHistory.length - 1 - i;
+                 // Don't show previously if it's currently being rewritten (it's handled below)
+                 if (isRewritingMiras && reversedIndex === 0) return null;
+                 
+                 // Collapse anything older than 1 completely
+                 if (reversedIndex > 0) return null;
+                 
+                 return (
+                   <motion.div
+                     key={`hist-${i}`}
+                     initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                     animate={{ opacity: 0.3, height: 'auto', marginTop: 16 }}
+                     exit={{ opacity: 0, height: 0, marginTop: 0, paddingBottom: 0 }}
+                     className="line-through pl-6 relative overflow-hidden"
+                   >
+                     <div className="absolute left-[-1rem] mt-2 w-2 h-2 rounded-full bg-miras-blue/40" />
+                     {hist}
+                   </motion.div>
+                 );
+              })}
+            
+              {isRewritingMiras && mirasPreviousMemory && (
+                <motion.div
+                  key="rewriting"
+                  initial={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  className="opacity-30 line-through pl-6 relative overflow-hidden"
+                >
+                  <div className="absolute left-[-1rem] mt-2 w-2 h-2 rounded-full bg-miras-blue/60" />
+                  {mirasPreviousMemory}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <motion.div
-              key={mirasMemory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="font-mono text-sm text-miras-blue leading-relaxed text-justify"
+              layout
+              className="text-zinc-200 pl-6 relative"
             >
-              {mirasMemory || '...'}
+              <div className="absolute left-[-1rem] mt-2 w-3 h-3 rounded-full bg-miras-blue outline outline-2 outline-offset-2 outline-miras-blue/30" />
+              {mirasMemory || (!isRewritingMiras && mirasPreviousMemory ? mirasPreviousMemory : '...')}
             </motion.div>
-          </AnimatePresence>
+          </div>
+          
           <div className="absolute bottom-6 left-6 right-6">
-            <p className="text-[10px] text-zinc-600 font-sans">{t('reel.miras_caption')}</p>
+             <p className="text-xs text-zinc-600 font-sans">{t('reel.miras_caption')}</p>
           </div>
         </div>
       </div>

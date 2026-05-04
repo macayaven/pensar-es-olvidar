@@ -6,13 +6,3 @@ coverage/
 *.log
 .env*
 !.env.example
-.vscode
-.husky/_
-
-# Playwright artefacts
-test-results/
-playwright-report/
-playwright/.cache/
-
-# Chained MIRAS eval trace output (regenerated each live run)
-evals/output/
