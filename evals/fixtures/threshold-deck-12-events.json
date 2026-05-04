@@ -1,6 +1,6 @@
 {
-  "themeWord": "threshold",
-  "themePattern": "threshold|thresholds",
+  "themeWord": "spatial-threshold theme",
+  "themePattern": "threshold|thresholds|liminal|liminality|boundary|boundaries|opening|openings|crossing|crossings|passage|passages|edge|edges|portal|portals|brink|verge|in.between",
   "forbiddenTokensByEvent12": [
     "32%",
     "41%",

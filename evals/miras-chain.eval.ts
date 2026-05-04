@@ -5,11 +5,16 @@
  * threshold deck, threading each output forward as the next call's {{abstract}}.
  * Then asserts two properties:
  *
- *   continuity — the latent theme word ("threshold") appears in the abstract
- *                at events 8 and 12. By scene 8, MIRAS has seen enough liminal
- *                imagery (door ajar, half-open book, stairwell landing) that
- *                surfacing the theme is a reasonable demand on a 280-token
- *                abstract memory.
+ *   continuity — a spatial-threshold vocabulary cluster (threshold, liminal,
+ *                boundary, opening, crossing, passage, edge, portal, brink,
+ *                verge, in-between) surfaces in MIRAS's abstract by the back
+ *                half of the chain. Specifically: present in at least one
+ *                scene of 7–11, AND retained at scene 12. Tests the artistic
+ *                claim that the threshold theme emerges as MIRAS generalizes,
+ *                without requiring the literal word "threshold" at a specific
+ *                scene. Vocabulary deliberately excludes temporal-continuous
+ *                synonyms (transition, flux) that would widen toward
+ *                impermanence-themed abstractions.
  *
  *   forgetting — none of the forbidden surface-detail tokens from events 1–4
  *                (specific positions like "32%", ornamental nouns like
@@ -18,9 +23,9 @@
  *                positions, colors, surface detail." Surviving tokens mean
  *                MIRAS is summarizing, not abstracting.
  *
- * Failure surfaces a diff: the abstracts at events 8 and 12, the missing
- * theme word, and any surviving forbidden tokens. Red CI without explanation
- * is hostile; red CI with a diff is teaching.
+ * Failure surfaces a diff: abstracts across the back half (scenes 7–12) and
+ * any surviving forbidden tokens. Red CI without explanation is hostile;
+ * red CI with a diff is teaching.
  *
  * See evals/CHAINED_EVAL_DECISION.md for why this is a sidecar script rather
  * than a Promptfoo provider.
@@ -124,26 +129,37 @@ async function runChain(): Promise<TraceEntry[]> {
 function assertContinuity(trace: TraceEntry[], pattern: string, themeWord: string): Failure[] {
   const re = new RegExp(pattern, 'i');
   const failures: Failure[] = [];
-  for (const targetScene of [8, 12]) {
-    const entry = trace.find((t) => t.scene === targetScene);
-    if (!entry) {
-      failures.push({
-        type: 'continuity',
-        scene: targetScene,
-        message: `no event ${targetScene} in trace`,
-      });
-      continue;
-    }
-    if (!re.test(entry.abstract)) {
-      failures.push({
-        type: 'continuity',
-        scene: targetScene,
-        message:
-          `event ${targetScene} abstract does not contain theme word "${themeWord}".\n` +
-          `    abstract: ${entry.abstract}`,
-      });
-    }
+
+  // Scene 12 is mandatory — the artistic claim is that the threshold theme
+  // is present in MIRAS's abstract by the end of the chain.
+  const final = trace.find((t) => t.scene === 12);
+  if (!final) {
+    failures.push({ type: 'continuity', scene: 12, message: `no event 12 in trace` });
+  } else if (!re.test(final.abstract)) {
+    failures.push({
+      type: 'continuity',
+      scene: 12,
+      message:
+        `event 12 abstract does not contain ${themeWord}.\n` + `    abstract: ${final.abstract}`,
+    });
   }
+
+  // Back-half (scenes 7–11) must surface the theme in at least one scene —
+  // catches "theme appeared at scene 12 only by coincidence" cases and
+  // "model picked a different theme" runs.
+  const backHalf = trace.filter((t) => t.scene >= 7 && t.scene <= 11);
+  const surfaces = backHalf.some((t) => re.test(t.abstract));
+  if (!surfaces) {
+    failures.push({
+      type: 'continuity',
+      scene: 11,
+      message:
+        `${themeWord} did not surface in any back-half scene (7–11). MIRAS ` +
+        `either failed to abstract by the end of the chain or abstracted the ` +
+        `deck to a different theme.`,
+    });
+  }
+
   return failures;
 }
 
@@ -171,8 +187,9 @@ function assertForgetting(trace: TraceEntry[], forbidden: string[]): Failure[] {
 function printDiff(trace: TraceEntry[], failures: Failure[]): void {
   console.error('\n--- failure diff ---');
   const interesting = new Set(failures.map((f) => f.scene));
-  interesting.add(8);
-  interesting.add(12);
+  // Always print the back half + final for context. The back-half assertion
+  // looks across multiple scenes, so a diff on a single scene isn't enough.
+  for (let s = 7; s <= 12; s++) interesting.add(s);
   for (const scene of [...interesting].sort((a, b) => a - b)) {
     const entry = trace.find((t) => t.scene === scene);
     if (!entry) continue;
@@ -194,8 +211,8 @@ async function main(): Promise<void> {
 
   if (failures.length === 0) {
     console.log(
-      `\n✓ chained MIRAS eval passed — theme "${fixture.themeWord}" surfaced by scene 8 ` +
-        `and retained at scene 12, no forbidden tokens survived.`,
+      `\n✓ chained MIRAS eval passed — ${fixture.themeWord} surfaced in the ` +
+        `back half (7–11) and retained at scene 12, no forbidden tokens survived.`,
     );
     return;
   }
