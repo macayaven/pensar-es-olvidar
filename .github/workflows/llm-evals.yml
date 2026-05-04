@@ -14,8 +14,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: llm-evals-${{ github.ref }}
-  cancel-in-progress: true
+  # PR pushes: cancel-in-progress saves API budget on rapid resubmits.
+  # workflow_dispatch (manual stability sampling): each run gets a unique
+  # group so multiple triggers on the same ref accumulate in parallel
+  # rather than serializing or cancelling each other.
+  # schedule (weekly cron): shared group; cron interval makes it moot.
+  group: llm-evals-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' && github.run_id || github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   miras:
