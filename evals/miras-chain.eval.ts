@@ -36,6 +36,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GoogleGenAI } from '@google/genai';
 import { renderMirasRetention } from '../src/prompts';
+import { withEmptyResponseRetry } from './withEmptyResponseRetry';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_PATH = join(__dirname, 'fixtures/threshold-deck-12-events.json');
@@ -107,16 +108,15 @@ async function runChain(): Promise<TraceEntry[]> {
     // (src/geminiService.ts) deliberately keeps tracking
     // gemini-flash-latest with no explicit temperature; that channel
     // surfaces upstream drift via this canary, not via end-user output.
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: { temperature: 0.3 },
-    });
-    const text = response.text?.trim();
-    if (!text) {
-      throw new Error(`Empty response from Gemini at scene ${event.scene}`);
-    }
-    abstract = text;
+    abstract = await withEmptyResponseRetry(
+      () =>
+        ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config: { temperature: 0.3 },
+        }),
+      event.scene,
+    );
     trace.push({
       scene: event.scene,
       digit: event.digit,
