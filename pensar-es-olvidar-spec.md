@@ -19,7 +19,7 @@ A web artifact that stages Borges's *Funes el memorioso* as a live cognitive exp
 |---|---|---|
 | Build platform | **AI Studio Build** (not Canvas) | Multi-file, Live API support, GitHub export, deploy. Canvas can't carry this scope. |
 | Default language | English | Global I/O audience. |
-| Supported languages | EN / ES / ZH-Hans / HI / PT-BR / JA | ~80% audience coverage. Borges quote stays Spanish always. |
+| Supported languages | EN / ES / ZH-Hans / HI / PT-BR | Five-language coverage of I/O target audience. Borges quote stays Spanish always. (JA dropped for V1 — see HANDOFF.) |
 | Voice auditor | Yes — Gemini Live API | Highest captivation lever. Transforms watch-demo into interrogate-demo. |
 | Engineering spine | TS/React/Vite + Vitest + GitHub Actions + Firebase Hosting + Sentry | Vibed scaffold, hardened repo. |
 | V2 persistent memory | Designed-for, deferred | Architect V1 memory as swappable interface. |
@@ -43,7 +43,7 @@ A pulse, then one button: **Begin** (or its translation).
 
 No tutorial. No instructions. The thesis is stated and the test begins. The instruction "click the digits when you see them" appears as a thin caption *during* the first scene only — discovered, not lectured.
 
-**Top-right corner throughout:** a globe icon for language selection. Tapping reveals a clean dropdown of the six languages with native-script labels (English / Español / 中文 / हिन्दी / Português / 日本語). Selection persists in localStorage.
+**Top-right corner throughout:** a globe icon for language selection. Tapping reveals a clean dropdown of the five languages with native-script labels (English / Español / 中文 / हिन्दी / Português). Selection persists in localStorage.
 
 ### Act II — The Stream (≈75–90s)
 
@@ -123,8 +123,6 @@ User can end at any time with a tap. The voice session is the moment that lifts 
 For non-Latin scripts, fallback stack:
 - Mandarin: `Noto Serif SC` for serif, `Noto Sans SC` for chrome.
 - Hindi: `Noto Serif Devanagari`, `Noto Sans Devanagari`.
-- Japanese: `Noto Serif JP`, `Noto Sans JP`.
-
 **Sound.**
 - Reel: ambient drone bed, no music, room tone.
 - Bloom chime: sine-wave pings at ten pitches (Pentatonic mapping: 1=C3, 2=D3, 3=E3, 4=G3, 5=A3, 6=C4, 7=D4, 8=E4, 9=G4, 10=A4). Sequence forms unintentional melody.
@@ -172,11 +170,11 @@ Each deck has its own latent theme that MIRAS will surface and Funes will miss.
 
 ### Strategy
 
-- UI strings in `i18n/{en,es,zh,hi,pt,ja}.json`. ~40 strings total.
+- UI strings in `i18n/{en,es,zh,hi,pt}.json`. ~40 strings total.
 - Borges quote: stored separately, **always shown in Spanish**, with subtitle from i18n.
 - Reel scene captions (the thin instructional text in scene 1 only): translated.
 - Gemini outputs (MIRAS abstract, auditor questions, audit answers, judge verdict): instructed via system prompt to respond in `{language}`. This is essentially free.
-- Voice session: Gemini Live API supports the six target languages natively. Voice selection follows UI language.
+- Voice session: Gemini Live API supports the five target languages natively. Voice selection follows UI language.
 
 ### UI-string set (final, English baseline)
 
@@ -214,7 +212,7 @@ Each deck has its own latent theme that MIRAS will surface and Funes will miss.
 ```
 
 ### Language detection
-- On load: `navigator.language` → match to one of six → default to English if no match.
+- On load: `navigator.language` → match to one of five → default to English if no match.
 - Manual override via globe icon → persists in localStorage.
 - Borges quote in Spanish, subtitle in selected language. Always. This is non-negotiable.
 
@@ -279,7 +277,7 @@ pensar-es-olvidar/
 │   │   └── prompts.ts                # all Gemini prompts in one place
 │   ├── i18n/
 │   │   ├── index.ts
-│   │   └── locales/{en,es,zh,hi,pt,ja}.json
+│   │   └── locales/{en,es,zh,hi,pt}.json
 │   ├── audio/
 │   │   ├── chimes.ts                 # Tone.js bloom pitches
 │   │   └── ambient.ts                # background drone
@@ -524,7 +522,7 @@ Build a React + TypeScript + Vite + Tailwind web app called
 ACT 1 — PROLOGUE: Black screen, types out the Spanish line
 "Pensar es olvidar diferencias, es generalizar, abstraer."
 followed by an English subtitle. One button "Begin" that advances to Act 2.
-Top-right: a globe icon language selector with EN/ES/ZH/HI/PT/JA.
+Top-right: a globe icon language selector with EN/ES/ZH/HI/PT.
 
 ACT 2 — REEL: Three-column layout. Center 60%: a sequence of 12 scenes
 loaded from data/decks/thresholds.ts, each containing a hidden digit 1-10
@@ -562,7 +560,7 @@ THEMING:
 - Spanish text in EB Garamond, mono rails in JetBrains Mono
 - Animations tasteful — Framer Motion for bloom and strike-throughs only
 
-I18N: react-i18next, six languages, Borges quote always Spanish + subtitle
+I18N: react-i18next, five languages, Borges quote always Spanish + subtitle
 in selected language.
 
 ARCHITECTURE: Memory interface in src/memory/types.ts that both Funes

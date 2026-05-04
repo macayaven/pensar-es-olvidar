@@ -5,8 +5,8 @@ const NOTE_FREQS: Record<number, number> = {
   2: 293.66, // D4
   3: 329.63, // E4
   4: 349.23, // F4
-  5: 392.00, // G4
-  6: 440.00, // A4
+  5: 392.0, // G4
+  6: 440.0, // A4
   7: 493.88, // B4
   8: 523.25, // C5
   9: 587.33, // D5
@@ -18,7 +18,11 @@ export function useAudio() {
 
   const playChime = useCallback((digit: number) => {
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const Ctor =
+        window.AudioContext ??
+        (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!Ctor) return;
+      audioCtxRef.current = new Ctor();
     }
 
     const ctx = audioCtxRef.current;

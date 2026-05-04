@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { TrialRound } from '../types';
+import { type TrialRound } from '../types';
 
 interface TrialProps {
   rounds: TrialRound[];
@@ -10,7 +10,7 @@ interface TrialProps {
 
 export default function Trial({ rounds, currentRoundIndex }: TrialProps) {
   const { t } = useTranslation();
-  
+
   // currentRoundIndex is the number of rounds completed/in-progress.
   // App.tsx updates rounds array as they complete.
   // We want to show the one being currently "processed" or the last one if all done.
@@ -42,7 +42,7 @@ export default function Trial({ rounds, currentRoundIndex }: TrialProps) {
         <div className="absolute top-12 text-[10px] uppercase tracking-[0.3em] text-zinc-600 font-sans">
           {t('trial.round', { round: displayIndex + 1 })}
         </div>
-        
+
         <h2 className="text-3xl font-serif text-bloom-white text-center italic max-w-xl">
           {currentRound?.question || '...'}
         </h2>

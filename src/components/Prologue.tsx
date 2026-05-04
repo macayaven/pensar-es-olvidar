@@ -27,7 +27,7 @@ export default function Prologue({ onBegin }: PrologueProps) {
   }, [quote]);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -40,7 +40,7 @@ export default function Prologue({ onBegin }: PrologueProps) {
             <span className="animate-pulse">|</span>
           </h1>
           {i18n.language !== 'es' && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: isFinished ? 0.6 : 0 }}
               className="text-lg text-zinc-400 font-sans italic"
@@ -48,7 +48,7 @@ export default function Prologue({ onBegin }: PrologueProps) {
               "Pensar es olvidar diferencias, es generalizar, abstraer."
             </motion.p>
           )}
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: isFinished ? 0.4 : 0 }}
             className="text-sm text-zinc-500 font-sans"

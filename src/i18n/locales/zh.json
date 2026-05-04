@@ -1,7 +1,35 @@
 {
-  "prologue": { "quote": "To think is to forget differences, to generalize, to abstract.", "attribution": "— Borges, Funes the Memorious", "begin": "开始", "instruction": "Click any number 1–10 you see during the next 90 seconds." },
+  "prologue": {
+    "quote": "To think is to forget differences, to generalize, to abstract.",
+    "attribution": "— Borges, Funes the Memorious",
+    "begin": "开始",
+    "instruction": "Click any number 1–10 you see during the next 90 seconds."
+  },
   "reel": { "miras_caption": "≤ 280 tokens · pattern over detail" },
-  "trial": { "title": "审判", "round": "第 {{round}} / IV 轮", "questions": { "r1": "What appeared in scene 5?", "r2": "What theme runs through all the scenes?", "r3": "If scene 5 had been different, would the meaning of the whole change?", "r4": "Tell me what you understood." } },
-  "verdict": { "share": "分享结果", "restart": "重新阅读", "closing": "Pensar es olvidar.", "rubric": { "specificity": "精确度", "generalization": "概括力", "coherence": "连贯性", "understanding": "理解力" } },
-  "prompts": { "miras_retention": "You are a memory with a fixed budget of 280 tokens...", "auditor_query": "You are interrogating a memory...", "judge": "You have witnessed a trial between two memories..." }
+  "trial": {
+    "title": "审判",
+    "round": "第 {{round}} / IV 轮",
+    "questions": {
+      "r1": "What appeared in scene 5?",
+      "r2": "What theme runs through all the scenes?",
+      "r3": "If scene 5 had been different, would the meaning of the whole change?",
+      "r4": "Tell me what you understood."
+    }
+  },
+  "verdict": {
+    "share": "分享结果",
+    "restart": "重新阅读",
+    "closing": "Pensar es olvidar.",
+    "rubric": {
+      "specificity": "精确度",
+      "generalization": "概括力",
+      "coherence": "连贯性",
+      "understanding": "理解力"
+    }
+  },
+  "prompts": {
+    "miras_retention": "You are a memory with a fixed budget of 280 tokens...",
+    "auditor_query": "You are interrogating a memory...",
+    "judge": "You have witnessed a trial between two memories..."
+  }
 }
