@@ -6,7 +6,8 @@ on:
     paths:
       - 'evals/**'
       - 'src/prompts.ts'
-      - 'src/i18n/locales/**'
+      # 'src/i18n/locales/**' removed in S1: prompts moved to src/prompts.ts,
+      # locale edits no longer affect LLM eval outcomes.
       - '.github/workflows/llm-evals.yml'
   schedule:
     # Mondays at 06:00 UTC — catch model drift even when prompts are stable.

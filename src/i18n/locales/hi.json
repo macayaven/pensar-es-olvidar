@@ -26,10 +26,5 @@
       "coherence": "सुसंगति",
       "understanding": "समझ"
     }
-  },
-  "prompts": {
-    "miras_retention": "You are a memory with a fixed budget of 280 tokens...",
-    "auditor_query": "You are interrogating a memory...",
-    "judge": "You have witnessed a trial between two memories..."
   }
 }

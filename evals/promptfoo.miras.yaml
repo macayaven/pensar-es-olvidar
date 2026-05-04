@@ -1,9 +1,11 @@
 description: MIRAS retention prompt — single-shot sanity baseline
 
-# Spec §7 canonical English template; see ../prompts/miras-retention.txt
-# When GAP_ANALYSIS.md S1 lands, this should source from src/prompts.ts.
+# Spec §7 canonical English template, sourced from src/prompts.ts
+# (single source of truth post GAP_ANALYSIS S1). The named export
+# `mirasRetentionPrompt` adapts promptfoo's `{ vars }` calling convention
+# to the flat-args render function used by the app.
 prompts:
-  - file://./prompts/miras-retention.txt
+  - file://../src/prompts.ts:mirasRetentionPrompt
 
 providers:
   - id: google:gemini-flash-latest

@@ -14,6 +14,7 @@ import {
 import reelThresholds from './data/reel-thresholds.json';
 import { useAudio } from './hooks/useAudio';
 import { rewriteMirasMemory, auditMemory, judgeMemories } from './geminiService';
+import { localeToLanguageName } from './i18n/languageNames';
 
 // Components
 import Prologue from './components/Prologue';
@@ -54,17 +55,18 @@ export default function App() {
 
       const eventDescription = `In scene "${scene.caption}", the digit ${entry.digit} was perceived at (${entry.click_xy.x}%, ${entry.click_xy.y}%).`;
       const newMiras = await rewriteMirasMemory(
-        t('prompts.miras_retention'),
         mirasMemory,
         eventDescription,
+        localeToLanguageName(i18n.language),
       );
       setMirasMemory(newMiras);
     },
-    [mirasMemory, t, playChime],
+    [mirasMemory, i18n.language, playChime],
   );
 
   const startTrial = async () => {
     setPhase('trial');
+    const language = localeToLanguageName(i18n.language);
     const questions = [
       t('trial.questions.r1'),
       t('trial.questions.r2'),
@@ -80,8 +82,8 @@ export default function App() {
         .join(', ');
 
       const [funesAns, mirasAns] = await Promise.all([
-        auditMemory(t('prompts.auditor_query'), q, funesDump, i18n.language),
-        auditMemory(t('prompts.auditor_query'), q, mirasMemory, i18n.language),
+        auditMemory(q, funesDump, language),
+        auditMemory(q, mirasMemory, language),
       ]);
 
       const round = { question: q, funesAnswer: funesAns, mirasAnswer: mirasAns };
@@ -99,7 +101,7 @@ export default function App() {
           `Round ${i + 1}: Q: ${r.question}\nFunes: ${r.funesAnswer}\nMIRAS: ${r.mirasAnswer}`,
       )
       .join('\n\n');
-    const verdictData = await judgeMemories(t('prompts.judge'), transcript, i18n.language);
+    const verdictData = await judgeMemories(transcript, language);
     setVerdict(verdictData);
     setPhase('verdict');
   };

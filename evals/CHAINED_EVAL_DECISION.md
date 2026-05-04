@@ -53,21 +53,18 @@ Tests would be authored as **one row per scene** with `priorMemory` threaded by 
 A standalone `evals/chain.ts` runs the 12-event chain end-to-end, writes `evals/output/miras-chain.json` with `[{ scene, abstract, tokens, ... }]`, and a separate `promptfoo.miras-chain.yaml` uses `providers: exec://node evals/replay.ts` (or just file-based assertions) to score the recorded outputs.
 
 ```ts
-// evals/chain.ts (sketch)
+// evals/chain.ts (sketch — final impl shipped as evals/miras-chain.eval.ts)
 import { GoogleGenAI } from '@google/genai';
 import events from './fixtures/threshold-events.json';
 import { writeFileSync } from 'fs';
+import { renderMirasRetention } from '../src/prompts';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
-const prompt = readFileSync('./prompts/miras-retention.txt', 'utf8');
 
 let abstract = '(nothing yet)';
 const trace = [];
 for (const ev of events) {
-  const filled = prompt
-    .replace('{{abstract}}', abstract)
-    .replace('{{event}}', ev.event)
-    .replace('{{language}}', 'English');
+  const filled = renderMirasRetention({ abstract, event: ev.event, language: 'English' });
   const r = await ai.models.generateContent({ model: 'gemini-1.5-flash-latest', contents: filled });
   abstract = r.text!.trim();
   trace.push({ scene: ev.scene, digit: ev.digit, abstract, tokenEstimate: abstract.length / 4 });

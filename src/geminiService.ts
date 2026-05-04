@@ -1,16 +1,19 @@
 import { GoogleGenAI } from '@google/genai';
 import { type JudgeVerdict } from './types';
+import { renderMirasRetention, renderAuditorQuery, renderJudge } from './prompts';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 export async function rewriteMirasMemory(
-  promptTemplate: string,
   currentMemory: string,
   eventDescription: string,
+  language: string,
 ): Promise<string> {
-  const prompt = promptTemplate
-    .replace('{{abstract}}', currentMemory || '(nothing yet)')
-    .replace('{{event}}', eventDescription);
+  const prompt = renderMirasRetention({
+    abstract: currentMemory || '(nothing yet)',
+    event: eventDescription,
+    language,
+  });
 
   try {
     const response = await ai.models.generateContent({
@@ -25,15 +28,11 @@ export async function rewriteMirasMemory(
 }
 
 export async function auditMemory(
-  promptTemplate: string,
   question: string,
   memoryDump: string,
   language: string,
 ): Promise<string> {
-  const prompt = promptTemplate
-    .replace('{{question}}', question)
-    .replace('{{memory_dump}}', memoryDump)
-    .replace('{{language}}', language);
+  const prompt = renderAuditorQuery({ question, memory_dump: memoryDump, language });
 
   try {
     const response = await ai.models.generateContent({
@@ -47,14 +46,8 @@ export async function auditMemory(
   }
 }
 
-export async function judgeMemories(
-  promptTemplate: string,
-  transcript: string,
-  language: string,
-): Promise<JudgeVerdict> {
-  const prompt = promptTemplate
-    .replace('{{transcript}}', transcript)
-    .replace('{{language}}', language);
+export async function judgeMemories(transcript: string, language: string): Promise<JudgeVerdict> {
+  const prompt = renderJudge({ transcript, language });
 
   try {
     const response = await ai.models.generateContent({

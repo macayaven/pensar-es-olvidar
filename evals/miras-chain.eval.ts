@@ -35,10 +35,11 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GoogleGenAI } from '@google/genai';
+import { renderMirasRetention } from '../src/prompts';
+import { withEmptyResponseRetry } from './withEmptyResponseRetry';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_PATH = join(__dirname, 'fixtures/threshold-deck-12-events.json');
-const PROMPT_PATH = join(__dirname, 'prompts/miras-retention.txt');
 const TRACE_PATH = join(__dirname, 'output/miras-chain.trace.json');
 
 interface Event {
@@ -69,7 +70,6 @@ interface Failure {
 }
 
 const fixture: Fixture = JSON.parse(readFileSync(FIXTURE_PATH, 'utf8'));
-const promptTemplate = readFileSync(PROMPT_PATH, 'utf8');
 
 async function runChain(): Promise<TraceEntry[]> {
   const useFixture = process.env.MIRAS_USE_FIXTURE === '1';
@@ -95,10 +95,11 @@ async function runChain(): Promise<TraceEntry[]> {
   const trace: TraceEntry[] = [];
 
   for (const event of fixture.events) {
-    const prompt = promptTemplate
-      .replace('{{abstract}}', abstract)
-      .replace('{{event}}', event.event)
-      .replace('{{language}}', 'English');
+    const prompt = renderMirasRetention({
+      abstract,
+      event: event.event,
+      language: 'English',
+    });
 
     // Eval-only pin. The chained eval is this repo's canary for upstream
     // model drift, so it pins to a stable, GA-classified Flash and to a
@@ -107,16 +108,15 @@ async function runChain(): Promise<TraceEntry[]> {
     // (src/geminiService.ts) deliberately keeps tracking
     // gemini-flash-latest with no explicit temperature; that channel
     // surfaces upstream drift via this canary, not via end-user output.
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: { temperature: 0.3 },
-    });
-    const text = response.text?.trim();
-    if (!text) {
-      throw new Error(`Empty response from Gemini at scene ${event.scene}`);
-    }
-    abstract = text;
+    abstract = await withEmptyResponseRetry(
+      () =>
+        ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config: { temperature: 0.3 },
+        }),
+      event.scene,
+    );
     trace.push({
       scene: event.scene,
       digit: event.digit,

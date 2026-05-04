@@ -28,10 +28,5 @@
       "coherence": "Coherencia",
       "understanding": "Comprensión"
     }
-  },
-  "prompts": {
-    "miras_retention": "Eres una memoria con un presupuesto fijo de 280 tokens.\nTu memoria actual: {{abstract}}\nUn nuevo evento percibido: {{event}}\n\nReescribe tu memoria para incorporar la esencia del nuevo evento.\nDEBES mantenerte por debajo de los 280 tokens. Para hacer espacio, debes olvidar.\n\nMantén: patrones, relaciones, temas, lo que se repite.\nDescarta: tiempos exactos, posiciones, colores, detalles superficiales.\n\nDevuelve solo la nueva memoria. Sin explicaciones.",
-    "auditor_query": "Estás interrogando a una memoria. No conoces los eventos originales, solo lo que la memoria responde.\n\nPregunta: {{question}}\n\nMemoria interrogada (esto es todo con lo que tienes que trabajar):\n{{memory_dump}}\n\nResponde en primera persona, como si fueras la memoria misma.\nSi no puedes generalizar, no generalices. Si solo tienes detalles, da detalles.\nSé fiel a tu naturaleza.\n\nResponde en {{language}}.",
-    "judge": "Has presenciado un juicio entre dos memorias. Aquí están las cuatro preguntas y las cuatro respuestas de cada una.\n\n{{transcript}}\n\nCalifica cada memoria del 1 al 10 en cuatro dimensiones:\n- especificidad (recuerda detalles exactos)\n- generalización (extrae patrones)\n- coherencia (mantiene un hilo)\n- comprensión (entiende, no solo recuerda)\n\nDevuelve JSON estricto en esta forma exacta:\n{\n  \"funes\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"miras\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"verdict\": \"<una frase final en {{language}}>\"\n}"
   }
 }
