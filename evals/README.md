@@ -39,14 +39,10 @@ The fixture lives at `fixtures/threshold-deck-12-events.json`. To extend the eva
 
 #### Replay mode
 
-`MIRAS_USE_FIXTURE=1 npm run eval:chain` replays the trace from `evals/output/miras-chain.trace.json` instead of calling Gemini. The trace file is regenerated on every live run and is gitignored — it is for local iteration on the assertions, not for CI. CI runs the chain live (path-gated to `evals/**`, `src/prompts.ts`, `src/i18n/locales/**`, plus the workflow file itself, plus a weekly cron).
+`MIRAS_USE_FIXTURE=1 npm run eval:chain` replays the trace from `evals/output/miras-chain.trace.json` instead of calling Gemini. The trace file is regenerated on every live run and is gitignored — it is for local iteration on the assertions, not for CI. CI runs the chain live (path-gated to `evals/**`, `src/prompts.ts`, plus the workflow file itself, plus a weekly cron).
 
 See `CHAINED_EVAL_DECISION.md` for why this is a sidecar Node script rather than a Promptfoo provider or a `transform` hack.
 
-## When prompts move
+## Prompt source of truth
 
-GAP_ANALYSIS.md S1 will move all three prompts out of `src/i18n/locales/*.json` into `src/prompts.ts`. When that lands:
-
-- Update `prompts:` in `promptfoo.miras.yaml` to `file://../src/prompts.ts:miras_retention` (or whatever export shape S1 picks).
-- Update `PROMPT_PATH` in `miras-chain.eval.ts` to read from the same source.
-- Delete `evals/prompts/miras-retention.txt`.
+All three prompts live in `src/prompts.ts` as named string exports (`mirasRetention`, `auditorQuery`, `judge`) with `{{token}}` placeholders, plus thin `render*` functions that do `.replace()` interpolation. Promptfoo loads via the function-prompt adapter `mirasRetentionPrompt` exported from the same file (`file://../src/prompts.ts:mirasRetentionPrompt`). The chained eval imports `renderMirasRetention` directly.

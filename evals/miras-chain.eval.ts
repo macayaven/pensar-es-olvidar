@@ -35,10 +35,10 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GoogleGenAI } from '@google/genai';
+import { renderMirasRetention } from '../src/prompts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_PATH = join(__dirname, 'fixtures/threshold-deck-12-events.json');
-const PROMPT_PATH = join(__dirname, 'prompts/miras-retention.txt');
 const TRACE_PATH = join(__dirname, 'output/miras-chain.trace.json');
 
 interface Event {
@@ -69,7 +69,6 @@ interface Failure {
 }
 
 const fixture: Fixture = JSON.parse(readFileSync(FIXTURE_PATH, 'utf8'));
-const promptTemplate = readFileSync(PROMPT_PATH, 'utf8');
 
 async function runChain(): Promise<TraceEntry[]> {
   const useFixture = process.env.MIRAS_USE_FIXTURE === '1';
@@ -95,10 +94,11 @@ async function runChain(): Promise<TraceEntry[]> {
   const trace: TraceEntry[] = [];
 
   for (const event of fixture.events) {
-    const prompt = promptTemplate
-      .replace('{{abstract}}', abstract)
-      .replace('{{event}}', event.event)
-      .replace('{{language}}', 'English');
+    const prompt = renderMirasRetention({
+      abstract,
+      event: event.event,
+      language: 'English',
+    });
 
     // Eval-only pin. The chained eval is this repo's canary for upstream
     // model drift, so it pins to a stable, GA-classified Flash and to a

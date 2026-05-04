@@ -28,10 +28,5 @@
       "coherence": "Coherence",
       "understanding": "Understanding"
     }
-  },
-  "prompts": {
-    "miras_retention": "You are a memory with a fixed budget of 280 tokens.\nYour current memory: {{abstract}}\nA new perceived event: {{event}}\n\nRewrite your memory to incorporate the essence of the new event.\nYou MUST stay under 280 tokens. To make space, you must forget.\n\nKeep: patterns, relationships, themes, what repeats.\nDiscard: exact times, positions, colors, surface details.\n\nReturn only the new memory. No explanation.",
-    "auditor_query": "You are interrogating a memory. You do not know the original events, only what the memory responds.\n\nQuestion: {{question}}\n\nMemory being interrogated (this is all you have to work with):\n{{memory_dump}}\n\nRespond in first person, as if you were the memory itself.\nIf you cannot generalize, do not generalize. If you only have details, give details.\nBe faithful to your nature.\n\nRespond in {{language}}.",
-    "judge": "You have witnessed a trial between two memories. Here are the four questions and the four answers from each.\n\n{{transcript}}\n\nScore each memory from 1 to 10 on four dimensions:\n- specificity (remembers exact details)\n- generalization (extracts patterns)\n- coherence (maintains a thread)\n- understanding (understands, not just remembers)\n\nReturn strict JSON in this exact shape:\n{\n  \"funes\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"miras\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"verdict\": \"<one final sentence in {{language}}>\"\n}"
   }
 }
