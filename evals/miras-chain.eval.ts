@@ -100,9 +100,17 @@ async function runChain(): Promise<TraceEntry[]> {
       .replace('{{event}}', event.event)
       .replace('{{language}}', 'English');
 
+    // Eval-only pin. The chained eval is this repo's canary for upstream
+    // model drift, so it pins to a stable, GA-classified Flash and to a
+    // low-but-non-zero temperature — failures here should be attributable
+    // to local code, not to preview-model variance. Production
+    // (src/geminiService.ts) deliberately keeps tracking
+    // gemini-flash-latest with no explicit temperature; that channel
+    // surfaces upstream drift via this canary, not via end-user output.
     const response = await ai.models.generateContent({
-      model: 'gemini-flash-latest',
+      model: 'gemini-2.5-flash',
       contents: prompt,
+      config: { temperature: 0.3 },
     });
     const text = response.text?.trim();
     if (!text) {
