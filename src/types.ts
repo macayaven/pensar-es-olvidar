@@ -17,13 +17,32 @@ export interface FunesEntry {
   digit: number;
 }
 
+export type TrialStage = 'framing' | 'funes' | 'miras' | 'synthesis';
+
 export interface TrialRound {
   question: string;
   funesAnswer: string;
   mirasAnswer: string;
+  index?: number;
+  stage?: TrialStage;
+}
+
+export interface MirasBridge {
+  question: string;
+  answer: string;
+  timestamp: number;
 }
 
 export interface JudgeVerdict {
+  analysis?: {
+    title: string;
+    thesis: string;
+    evidence: string[];
+    funesReading: string;
+    mirasReading: string;
+    synthesis: string;
+    closing: string;
+  };
   funes: {
     specificity: number;
     generalization: number;

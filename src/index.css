@@ -3,29 +3,70 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "EB Garamond", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    --font-serif: "EB Garamond", serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-funes-red: #B85450;
-  --color-miras-blue: #6B8CAE;
-  --color-bloom-white: #FFF8E7;
-  --color-background: #0A0A0B;
-}
+        --color-funes-red: #B85450;
+          --color-miras-blue: #6B8CAE;
+            --color-bloom-white: #FFF8E7;
+              --color-background: #0A0A0B;
+              }
 
-@layer base {
-  body {
-    @apply bg-background text-zinc-400 font-sans cursor-default overflow-hidden selection:bg-bloom-white/20;
-  }
-}
+              @layer base {
+                html,
+                  body,
+                    #root {
+                        width: 100%;
+                            height: 100%;
+                                min-height: 100%;
+                                    margin: 0;
+                                        overflow: hidden !important;
+                                            overscroll-behavior: none;
+                                              }
 
-.markdown-body p {
-  @apply mb-4 leading-relaxed;
-}
+                                                body {
+                                                    @apply bg-background text-zinc-400 font-sans cursor-default overflow-hidden selection:bg-bloom-white/20;
+                                                      }
 
-.funes-scroll::-webkit-scrollbar {
-  width: 2px;
-}
+                                                        #root {
+                                                            isolation: isolate;
+                                                              }
+                                                              }
 
-.funes-scroll::-webkit-scrollbar-thumb {
-  background: #B85450;
-}
+                                                              .alive-background {
+                                                                background:
+                                                                    radial-gradient(circle at 20% 20%, rgba(184, 84, 80, 0.12), transparent 32%),
+                                                                        radial-gradient(circle at 78% 24%, rgba(107, 140, 174, 0.14), transparent 34%),
+                                                                            linear-gradient(115deg, #09090b 0%, #0f1118 44%, #120c0d 100%);
+                                                                            }
+
+                                                                            .memory-grain {
+                                                                              background-image:
+                                                                                  radial-gradient(circle at 20% 30%, rgba(255, 248, 231, 0.18) 0 1px, transparent 1px),
+                                                                                      radial-gradient(circle at 70% 60%, rgba(255, 248, 231, 0.12) 0 1px, transparent 1px),
+                                                                                          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+                                                                                            background-size: 19px 23px, 29px 31px, 53px 53px;
+                                                                                            }
+
+                                                                                            .text-balance {
+                                                                                              text-wrap: balance;
+                                                                                              }
+
+                                                                                              .prologue-quote {
+                                                                                                color: #FFF8E7;
+                                                                                                  -webkit-text-fill-color: #FFF8E7;
+                                                                                                    text-shadow: 0 0 24px rgba(255, 248, 231, 0.18);
+                                                                                                      text-wrap: pretty;
+                                                                                                      }
+
+                                                                                                      .markdown-body p {
+                                                                                                        @apply mb-4 leading-relaxed;
+                                                                                                        }
+
+                                                                                                        .funes-scroll::-webkit-scrollbar {
+                                                                                                          width: 2px;
+                                                                                                          }
+
+                                                                                                          .funes-scroll::-webkit-scrollbar-thumb {
+                                                                                                            background: #B85450;
+                                                                                                            }

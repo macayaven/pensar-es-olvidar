@@ -7,13 +7,14 @@ const files = fs.readdirSync(localesDir);
 for (const file of files) {
   if (file.endsWith('.json')) {
     const filePath = path.join(localesDir, file);
-    let content = fs.readFileSync(filePath, 'utf8');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     
-    const target = `"understanding": <int> }`;
-    const replacement = `"understanding": <int>, "justification": "<a short 1-sentence justification for these scores>" }`;
+    data.prompts.judge = data.prompts.judge.replace(
+      /"understanding": <int> }/g,
+      '"understanding": <int>, "justification": "<a short 1-sentence justification>" }'
+    );
     
-    content = content.replaceAll(target, replacement);
-    fs.writeFileSync(filePath, content);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
   }
 }
 

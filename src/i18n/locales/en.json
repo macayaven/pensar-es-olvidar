@@ -1,19 +1,87 @@
 {
   "prologue": {
     "quote": "To think is to forget differences, to generalize, to abstract.",
-    "attribution": "— Borges, Funes the Memorious",
-    "intro": "Two memories will watch with you. Funes remembers everything. MIRAS remembers what matters.",
-    "begin": "Begin",
-    "instruction": "Watch the two memories perceive."
+    "attribution": "— After Jorge Luis Borges, \"Funes the Memorious\"",
+    "intro": "In the labyrinth of memory, two ghosts reside. One who cannot forget a single digit; another who must forget everything to understand one thing.",
+    "begin": "Enter Memory",
+    "instruction": "Presence required"
   },
   "reel": {
     "funes_header": "FUNES — verbatim memory",
     "miras_header": "MIRAS — bounded abstraction",
-    "miras_caption": "≤ 280 tokens · pattern over detail"
+    "miras_caption": "≤ 280 tokens · pattern over detail",
+    "labels": {
+      "revised_memory": "revised memory",
+      "current_question": "current question",
+      "bridge_answer": "bridge answer",
+      "fading_bridges": "fading bridges",
+      "erased_trace": "erased prior trace"
+    }
   },
   "trial": {
     "title": "The Trial",
     "round": "Round {{round}} / IV",
+    "cadence": "cadence",
+    "success_label": "what a successful reply would need",
+    "answering": "Answer forming...",
+    "waiting": {
+      "funes": "Funes waits with the archive intact.",
+      "miras": "MIRAS waits with only the abstraction."
+    },
+    "opening": {
+      "kicker": "The Inquiry",
+      "title": "A Memory on Trial",
+      "rule_label": "The Protocol",
+      "rule": "Can understanding survive if the details are infinite?"
+    },
+    "success": {
+      "r1": "Recover the particular without losing the story it belongs to.",
+      "r2": "Name the shared pattern, not merely repeat the scenes.",
+      "r3": "Explain whether one changed detail can alter the whole interpretation.",
+      "r4": "Turn the recorded sequence into a satisfying claim about memory and thought."
+    },
+    "stages": {
+      "framing": {
+        "label": "frame",
+        "body": "The auditor states the question and the criterion before either memory speaks."
+      },
+      "funes": {
+        "label": "Funes",
+        "body": "Funes answers first from exact captions, digits, dates, and times."
+      },
+      "miras": {
+        "label": "MIRAS",
+        "body": "MIRAS answers second from the compressed abstraction it has preserved."
+      },
+      "synthesis": {
+        "label": "fractura",
+        "body": "The trial pauses on what each answer gains, and what each answer cannot do."
+      }
+    },
+    "access": {
+      "funes": {
+        "title": "what Funes has",
+        "body": "Every perceived caption, digit, date, and millisecond: perfect evidence without a theory of relevance."
+      },
+      "miras": {
+        "title": "what MIRAS has",
+        "body": "One living abstraction and one fading trace: meaning made by dropping most of the inventory."
+      }
+    },
+    "answer": {
+      "funes": {
+        "label": "Answer: recall first",
+        "body": "The reply succeeds when it can prove a detail; it fails when the question asks for relation."
+      },
+      "miras": {
+        "label": "Answer: abstraction second",
+        "body": "The reply succeeds when it makes the whole legible; it fails when exact accounting is required."
+      }
+    },
+    "shortcoming": {
+      "funes": "Shortcoming: Funes can cite what happened, but not why those facts cohere.",
+      "miras": "Shortcoming: MIRAS can give meaning, but pays for it by surrendering literal proof."
+    },
     "questions": {
       "r1": "What appeared in scene 5?",
       "r2": "What theme runs through all the scenes?",
@@ -32,9 +100,24 @@
       "understanding": "Understanding"
     }
   },
+  "fallbacks": {
+    "judge": {
+      "title": "The shape that survived the loss",
+      "thesis": "The trial shows that memory becomes thought only when it can let go of the inventory and keep the relation between things.",
+      "evidence": [
+        "Funes preserves exact fragments, but the fragments never become a usable account.",
+        "MIRAS loses exact particulars, but the loss creates a coherent movement through departure and change.",
+        "The counted world becomes meaningful only when the count stops being the point."
+      ],
+      "funesReading": "Funes is magnificent as a record and tragic as a mind: nothing disappears, so nothing can become figure against ground.",
+      "mirasReading": "MIRAS is weaker as storage but stronger as interpretation: forgetting makes room for a pattern to appear.",
+      "synthesis": "The piece does not crown forgetting because detail is useless. It shows that detail needs an act of selection before it can become understanding.",
+      "closing": "What remains is not less memory, but memory transformed into thought."
+    }
+  },
   "prompts": {
-    "miras_retention": "You are a memory with a fixed budget of 280 tokens.\nYour current memory: {{abstract}}\nA new perceived event: {{event}}\n\nRewrite your memory to incorporate the essence of the new event.\nYou MUST stay under 280 tokens. To make space, you must forget.\n\nAbstract the imagery, not the data. Stop counting digits or tracking parity.\nKeep: patterns, relationships, themes, what repeats in the scenes.\nDiscard: exact times, positions, colors, surface details, literal digits.\n\nReturn only the new memory. No explanation.",
-    "auditor_query": "You are interrogating a memory. You do not know the original events, only what the memory responds.\n\nQuestion: {{question}}\n\nMemory being interrogated (this is all you have to work with):\n{{memory_dump}}\n\nRespond in first person, as if you were the memory itself.\nIf you cannot generalize, do not generalize. If you only have details, give details.\nBe faithful to your nature. Keep your answer under 80 words.\n\nRespond in {{language}}.",
-    "judge": "You have witnessed a trial between two memories. Here are the four questions and the four answers from each.\n\n{{transcript}}\n\nScore each memory from 1 to 10 on four dimensions:\n- specificity (remembers exact details)\n- generalization (extracts patterns)\n- coherence (maintains a thread)\n- understanding (understands, not just remembers)\n\nReturn strict JSON in this exact shape:\n{\n  \"funes\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"miras\": { \"specificity\": <int>, \"generalization\": <int>, \"coherence\": <int>, \"understanding\": <int> },\n  \"verdict\": \"<one final sentence describing who truly remembered, under 15 words, in {{language}}>\"\n}"
+    "miras_retention": "You are MIRAS, a memory that forgets details in order to think. Current abstraction: {{abstract}}. New perception: {{event}}. Rewrite as one compact abstraction under 55 words. Do not use digits, timestamps, scene numbers, coordinates, raw captions, bullet chronology, then, next, after, or before. Keep only emotional geometry: departure, absence, threshold, loss, relation, pattern. Return only the new memory.",
+    "auditor_query": "Question: {{question}}. Memory: {{memory_dump}}. Respond in first person as the memory itself. Make your method visible: say what your memory can use, answer the question, and close with one honest limit. If you cannot generalize, give details. If you cannot recall details, say what pattern remains. Keep under 70 words. Respond in {{language}}.",
+    "judge": "You are the final critic for a literary AI experience about Funes, MIRAS, memory, reasoning, and number. Use this transcript as evidence: {{transcript}}. Return strict JSON only with keys analysis, funes, miras, and verdict. analysis must include title, thesis, evidence array of three strings, funesReading, mirasReading, synthesis, and closing. funes and miras must include specificity, generalization, coherence, understanding, and justification. Scores are 1 to 10. All text must be in {{language}}. Make the interpretation rich, concise, and satisfying."
   }
 }
